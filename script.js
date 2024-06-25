@@ -158,4 +158,81 @@ git status - changes to be committed because the index and HEAD differ
 git commit - finalize the proposed next commit 
 git status - no output, because all three trees are the same again
 
+switching branches or cloning is similar
+when I check out a branch, it changes HEAD to point to the new branch reference, 
+populates my index with the snapshot of that commit,
+copies the contents of the index into my working directory
+
+reset manipulates the three trees, HEAD, Index, and Working Directory in 3 basic operations:
+1. move HEAD - reset moves what HEAD points to
+               (checkout changes HEAD itself)
+               reset moves the branch that HEAD is pointing to
+               with git reset --soft, the rest stops here
+              here, git reset essentially undoes the last git commit , moving the branch abck to where it was
+                without changing the index or working directory
+              now I can update the index and run git commit to accomplish the same thing as git commit --amend
+2. update the Index (--mixed) HEAD~ - reset will update the index with the contents of whatever snapshot HEAD now points to
+                      --mixed option, reset will stop at this point
+                     this command undoes my last commit and also unstaged everything,
+                     rolling back to before I ran all my git add and git commit commands
+3. update the working directory (--hard) - make the working directory look like the index
+                                undoes the last commit, the git add, and git commit commands, and all the work I did in my working directory 
+                                ***this is one of the few cases where Git will actually destroy data
+                                files in my working directory are forcibly overwritten
+                                I still have the v3 version of my file in a commit in my Git DB 
+
+reset can be provided with a path to act upon
+if I specify a path, reset skips step 1 and limits the remainder of its actions to a specific file or set of files
+git reset file.txt (same as git reset --mixed HEAD file.txt) - 1. move the branch HEAD points to
+                                                               2. makes the index look like HEAD
+    this has the practical effect of unstaging the file, the exact opposite of git add 
+could specify a specific commit to pull the file version from (git reset eb43bf file.txt)
+    this would be a soft reset with a path to a specific commit 
+
+reset command will accept a --patch option to unstage content on a hunk-by-hunk basis 
+    I can selectively unstage or revert content
+
+reset can quickly and easily squash irrelevant multiple commits into a single commit
+git reset --soft HEAD~2 - move the HEAD branch back to an older commit (the most recent commit I want to keep)
+                          moves HEAD with soft reset
+                          simply run git commit again
+                          now my reachable history, the history I would push, now looks like I had one commit with file-a.txt v1, 
+                          and a second that both modified file-a.txt to v3 and added file-b.txt
+                          the commit with the v2 version will no longer be in the history
+
+checkout is like reset, it manipulates the three trees
+without paths
+git checkout [branch] - updates all three trees to look like [branch]
+                        checkout is working-directory safe
+                        it will check to make sure it's not blowing away files that have changes to them
+                        it tries to do a merge in the working directory, so all of the files I haven't changed will be updated
+                        (reset moves the branch that HEAD points to)
+                        checkout moves HEAD itself to point to another branch
+git reset master - [developbranch] will now point to the same commit that master does
+                   reset moves the branch HEAD points to 
+git checkout master - [developbranch] does not move, HEAD itself does and will now point to master
+                      checkout moves the HEAD itself
+
+with paths 
+git checkout [file] - like reset, does not move HEAD
+                      (works just like git reset [branch] file)
+                      updates the index with that file at that commit
+                      also overwrites the file in the working directory
+                      it's not working-directory sage and it does not move HEAD
+                      checkout will accept a --patch option to allow me to selectively revert file contents on a hunk by hunk basis
+
+git stash - temporarily saves changes in my working directory that I am not ready to commit yet
+            allows me to switch branches or perform other tasks without losing my uncommitted changes
+
+git rebase --abort - repo will be returned to the state it was before I started the rebase
+
+git reflog - if I finish a rebase and decide it's not what I want, this recovers an earlier version of my branch
+
+Working with Remotes
+Using remotes to change history
+Dangers of history-changing operations
+Best practices of history-changing operations
+
+git push --force
+ 
 */
