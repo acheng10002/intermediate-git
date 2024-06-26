@@ -234,5 +234,72 @@ Dangers of history-changing operations
 Best practices of history-changing operations
 
 git push --force
- 
+very dangerous command
+should only be used with caution when collaborating with others
+fix my outdated history error by updating local history using fetch, merge, and then attempting to push again
+one common scenario for git push --force is updating pull requests
+git push --force-with-lease - this is a fail-safe, it checks if the branch I'm attempting to push to has been
+                              updated and sends me an error if it has, gives me an opportunity to, 
+                              fetch the work and update my local repository
+
+What is a safe way to push history changes to a remote repository?
+What are the dangers of history-changing operations?
+commit --amend, rebase, reset, push --force are all dangerous when collaborating with others
+What are best practices of history-changing operations?
+1. make sure rewirint history is safe to do and others know I'm doing it
+2. stick to using the dangerous commands only on branches that I'm working on by yourself
+3. recognize the power of -f
+4. don't push after every single commit, changing published history should be avoided when possible 
+5. a. git commit --amend - never amend commits that have been pushed to remote repositories
+   b. git rebase - bever rebase a repo that others may work off of
+   c. git reset - never reset commits that have been pushed to remote repositories
+   d. git push --force only when appropriate, default instead to using git push --force-with-lease
+
+Merge Conflicts
+merge conflicts - come about when I merge branches that have competing commits
+                  Git will need my help to decide which changes to incorporate in the final merge
+Resolve Them
+if the merge conflict is caused by competing line changes, resolve it on GitHub using the conflict editor
+if it's another type of merge conflict, resolve it in a local clone of the repo and push the change to my branch on GitHub
+
+if the merge conflict is on the command line, I cannot push local changes to GitHub until I resolve the merge conflict
+locally on my computer
+Resolve Them in Git
+
+references are pointers to commits, they're different in how and when they move 
+reference move means the if of the commit that it points to is updated
+local branch reference - consists entirely of a file in my project's .git/refs/heads directory
+                         it contains the 40 byte identifier of the commit that the reference points to 
+                         commands that affect local branch references include commit, merge, rebase, and reset
+remote branch reference - are specific to a single, remote repository
+                          commands that affect remove branch references include fetch and push
+pull combines fetch and either a merge or a rebase
+tag reference - branch reference that never moves 
+                once a tag is created, it will never change unless I explicitly update it using the --force option
+                ex. mark specific versions of a software package
+                ex. marge exactly got deployed to a production server on a particular date
+                command that affects tags, tag
+references make commits reachable
+Git's garbage collection algorithm: Starting from every branch and every tag, Git walks back through the graph, 
+                                    building a list of every commit it can reach.
+Without references, I can't go back to the commits, and Git will delete them when it decides it's time for garbage collection 
+
+creating a branch is a way to nail down part of the graph that I might want to come back to later
+neither git merge nor git rebase will change my existing commits, 
+I can create a temporary branch any time I want to try something I'm even just a little bit unsure about
+*creating a branch before I try a merge or a rebase is like saving my game before I battle the boss
+
+for using different branches to develop features...
+two variations of git merge;
+1. Scout pattern for if I'm still unclear on what git merge does or if I think it's likely I'll decide to back out of the merge
+    i.   Make sure you're on the right branch and that you have a clean working state.
+    ii.  Create a new branch (I often name it test_merge) and switch to it.
+    iii. Do the merge.
+    iv.  Switch to your visualizer and predict how its view will change when you refresh it.
+    v.   Refresh your visualizer and see whether your prediction was correct.
+    vi.  Are you happy with the result?
+         If YES: Move your real branch forward to where the test_merge branch is.
+         If NO: Delete the test_merge branch.
+2. Savepoint pattern for if I'm pretty sure about what I want to do, but just want to leave myself an undo button in case things get too messy
+
 */
