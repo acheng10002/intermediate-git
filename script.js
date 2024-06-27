@@ -301,5 +301,75 @@ two variations of git merge;
          If YES: Move your real branch forward to where the test_merge branch is.
          If NO: Delete the test_merge branch.
 2. Savepoint pattern for if I'm pretty sure about what I want to do, but just want to leave myself an undo button in case things get too messy
+    i.    Make sure you're on the right branch and that you have a clean working state.
+    ii.   Create a new branch to use as a savepoint, but don't switch to it.
+    iii.  Do the merge.
+    iv.   Switch to your visualizer and predict how its view will change when you refresh it.
+    v.    Refresh your visualizer and see whether your prediction was correct.
+    vi.   Are you happy with the result?
+          If YES: Delete the savepoint.
+          If NO: Reset your branch to the savepoint.
 
+When I merge branches in Git:
+- A new merge commit is created that has multiple parents.
+- The branch label/pointer of the branch I merged into (e.g. `main`) is updated to point to this new merge commit
+- One of the parents of the merge commit is the commit that the branch label was pointint to before the merge
+*The commit I started on will always be reachable.
+
+git cherry-pick - given one or more existing commits, apply the change each one introduces, recording a new commit for each
+                  (remember, a Git's commit's ID is a hash of both its contents and its history)
+                  git cherry-pick takes a commit from somewhere else, and plays it back where I am right now
+                  this introduces the same change with a different parent, Git builds a new commit with a different ID
+git rebase is a faster way to cherry-pick all of the commits in a given branch at once, rather than having to type of their IDs separately
+
+git checkout foo
+git checkout -b newbar
+git cherry-pick C D E
+git checkout bar
+git reset --hard newbar
+git branch -d newbar
+
+is equivalent to...
+
+git rebase foo bar
+
+Reminder about commit messages
+Using Git to make open source contributions
+upstream - the original GitHub repository
+origin - my fork of that repo
+local repository - my local clone of origin
+                   local can only pull from upstream, not push
+
+because I cloned the TOP curriculum repository, I've already got a remot that points to origin, which is my fork on GitHub
+I will use this to push changes back up to GitHub
+I'll also be able to pull directly from the original repository on GitHub, upstream, by setting it up as another remote
+
+I have one main branch
+main is for production-ready code
+any code deployed to main (not the original repo, not on my fork) will be tested in staging and shipped to production
+I'll be working in a feature branch and submitting my pull requests to the main branch
+
+anytime I want to merge in more senior branches, I want it to be a clean and conflict free merge if possible
+so first merge the senior branch into my dirty btanch to resolve merge conflicts
+
+git fetch upstream
+git merge upstream/some_branch
+
+is equivalent to...
+
+git pull upstream some_branch
+
+What name is typically given for a Git remote that points to a repo that's been forked?
+upstream - name for the remote that points to the original respository from which I forked
+
+Can I directly send changes to a repo that I don't own/have write access to?
+I'll need to make a pull request
+git push origin my_feature_name
+
+What should I do immediately before merging my feature branch in main?
+anytime I am merging into more senior branches (e.g. merging the feature into main), I want it to be a clean and
+conflict-free merge if possiblw
+So I first merge the senior branch into my feature branch to resolve the conflicts
+run git checkout my_feature_name to jump back onto my feature branch
+then git merge main to merge main into it
 */
